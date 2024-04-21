@@ -1,20 +1,22 @@
-import { Component, JSX, createSignal } from "solid-js";
+import { Component } from "solid-js";
 
-import styles from './style.module.css'
+import { ReadColumns, SelectFile } from "../../../wailsjs/go/main/App";
+import { setColumns, setFile } from "../../states/file";
+import styles from './style.module.css';
 
-const [file, setFile] = createSignal()
 
 const FileSelector: Component<{}> = (props) => {
-
-    const handleFileSelect: JSX.ChangeEventHandler<HTMLInputElement, Event> = (ev) => {
-        console.log(ev.target.files?.[0])
+    async function handleFileSelect() {
+        const filePath = await SelectFile()
+        setFile(filePath)
+        setColumns(await ReadColumns(filePath))
     }
 
     return <div class={styles.container}>
-        <p>Select/Drop a CSV file to be processed</p>
-        <input
-            type="file" accept="text/csv" class={styles.inputBox}
-            onChange={handleFileSelect}
+        <p id="MyWebView">Select/Drop a CSV file to be processed</p>
+        <div
+            class={styles.inputBox}
+            onClick={handleFileSelect}
         />
     </div>;
 };
